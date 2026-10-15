@@ -3,546 +3,306 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>快乐贪吃蛇</title>
+<title>珍珠小蛇</title>
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;padding:14px 10px 28px;
-  font-family:system-ui,-apple-system,sans-serif;
-  text-align:center;color:#21452e;
-  background:linear-gradient(150deg,#e9ffe8,#d9f2ff);
-}
-h1{font-size:28px;margin:5px 0 12px}
-.info{
-  display:flex;justify-content:center;gap:22px;
-  flex-wrap:wrap;font-size:17px;font-weight:bold;margin:10px;
-}
-#game{
-  display:block;width:min(94vw,480px);height:auto;
-  margin:12px auto;border:4px solid #39754c;
-  border-radius:16px;background:#f5ffed;
-  box-shadow:0 5px 18px #254d3025;touch-action:none;
-}
-button{
-  border:0;border-radius:12px;padding:12px 17px;
-  margin:5px;font-size:16px;font-weight:bold;
-  background:#299b5c;color:white;cursor:pointer;
-  touch-action:manipulation;
-}
-button:active{transform:scale(.97)}
-button:disabled{opacity:.5}
-.secondary{background:#617b8b}
-.danger{background:#d84b4b}
-.panel{
-  max-width:440px;margin:12px auto;padding:18px;
-  border-radius:18px;background:#ffffffed;
-  box-shadow:0 4px 16px #00000012;
-}
-#overlay{display:none}
-#overlay h2{margin:0 0 8px}
-#countdown{font-size:22px;font-weight:bold;color:#d84949}
-#message{min-height:24px;color:#456d50}
-.small{font-size:13px;color:#567363}
+body{margin:0;padding:14px 10px 28px;text-align:center;font-family:system-ui,sans-serif;color:#35475b;background:linear-gradient(150deg,#f5faff,#e8f2ff)}
+h1{font-size:27px;margin:5px 0 12px;color:#526d91}
+.info{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;font-size:17px;font-weight:bold;margin:10px}
+#game{display:block;width:min(94vw,480px);height:auto;margin:12px auto;border:3px solid #a9bfd8;border-radius:16px;background:#f9fcff;box-shadow:0 5px 18px #496a9020;touch-action:none}
+button{border:0;border-radius:12px;padding:12px 17px;margin:5px;font-size:16px;font-weight:bold;background:#779bc9;color:white;touch-action:manipulation}
+button:disabled{opacity:.45}
+.secondary{background:#8193a8}.danger{background:#cc777b}
+.panel{max-width:440px;margin:12px auto;padding:18px;border-radius:18px;background:#ffffffed;box-shadow:0 4px 16px #00000010}
+#overlay{display:none}#overlay h2{margin:0 0 8px}
+#countdown{font-size:22px;font-weight:bold;color:#cc777b}
+#message{min-height:24px;color:#657d98}.small{font-size:13px;color:#74869a}
 .controls{max-width:380px;margin:12px auto}
-#dpad{
-  display:grid;grid-template-columns:repeat(3,70px);
-  grid-template-rows:repeat(2,58px);
-  justify-content:center;gap:5px;
-}
+#dpad{display:grid;grid-template-columns:repeat(3,70px);grid-template-rows:repeat(2,58px);justify-content:center;gap:5px}
 #dpad button{margin:0;padding:7px;font-size:23px}
-#up{grid-column:2;grid-row:1}
-#left{grid-column:1;grid-row:2}
-#down{grid-column:2;grid-row:2}
-#right{grid-column:3;grid-row:2}
-#stickArea{
-  display:none;position:relative;
-  width:190px;height:190px;margin:12px auto;
-  border-radius:50%;background:#cdebd6;
-  border:3px solid #8fc9a3;touch-action:none;
-}
-#stick{
-  position:absolute;left:58px;top:58px;
-  width:68px;height:68px;border-radius:50%;
-  background:#299b5c;border:4px solid white;
-  box-shadow:0 2px 8px #0002;pointer-events:none;
-}
+#up{grid-column:2;grid-row:1}#left{grid-column:1;grid-row:2}#down{grid-column:2;grid-row:2}#right{grid-column:3;grid-row:2}
+#stickArea{display:none;position:relative;width:190px;height:190px;margin:12px auto;border-radius:50%;background:#e0eaf5;border:3px solid #bdcfe3;touch-action:none}
+#stick{position:absolute;left:58px;top:58px;width:68px;height:68px;border-radius:50%;background:#91abc9;border:4px solid white;box-shadow:0 2px 8px #0002;pointer-events:none}
 </style>
 </head>
 <body>
-
-<h1>🐍 快乐贪吃蛇</h1>
-
+<h1>🐍 珍珠小蛇</h1>
 <div class="info">
-  <span>🍎 得分：<span id="score">0</span></span>
-  <span>💚 剩余复活：<span id="lives">3</span></span>
+<span>🍎 得分：<span id="score">0</span></span>
+<span>💎 剩余复活：<span id="lives">3</span></span>
 </div>
-
 <canvas id="game" width="480" height="480"></canvas>
 
 <div class="panel" id="overlay">
-  <h2 id="overlayTitle">💥 撞到了！</h2>
-  <p id="overlayText">要不要再试一次？</p>
-  <p id="countdown"></p>
-  <div id="reviveActions">
-    <button id="reviveBtn">💚 复活</button>
-    <button id="exitBtn" class="danger">退出游戏</button>
-  </div>
-  <div id="endActions" style="display:none">
-    <button id="restartBtn">🔄 重新开始</button>
-    <button id="endExitBtn" class="danger">退出游戏</button>
-  </div>
+<h2 id="overlayTitle">撞到了！</h2>
+<p id="overlayText"></p>
+<p id="countdown"></p>
+<div id="reviveActions">
+<button id="reviveBtn">💫 随机位置复活</button>
+<button id="exitBtn" class="danger">退出游戏</button>
+</div>
+<div id="endActions" style="display:none">
+<button id="restartBtn">🔄 重新开始</button>
+<button id="endExitBtn" class="danger">退出游戏</button>
+</div>
 </div>
 
 <div>
-  <button id="startBtn">▶ 开始游戏</button>
-  <button id="pauseBtn" class="secondary" disabled>⏸ 暂停</button>
-  <button id="restartTopBtn" class="secondary">🔄 重开</button>
+<button id="startBtn">▶ 开始游戏</button>
+<button id="pauseBtn" class="secondary" disabled>⏸ 暂停</button>
+<button id="restartTopBtn" class="secondary">🔄 重开</button>
 </div>
 
 <div class="controls">
-  <button id="modeBtn" class="secondary">切换为虚拟摇杆</button>
-
-  <div id="dpad">
-    <button id="up" aria-label="向上">⬆️</button>
-    <button id="left" aria-label="向左">⬅️</button>
-    <button id="down" aria-label="向下">⬇️</button>
-    <button id="right" aria-label="向右">➡️</button>
-  </div>
-
-  <div id="stickArea"><div id="stick"></div></div>
+<button id="modeBtn" class="secondary">切换为虚拟摇杆</button>
+<div id="dpad">
+<button id="up">⬆️</button><button id="left">⬅️</button>
+<button id="down">⬇️</button><button id="right">➡️</button>
+</div>
+<div id="stickArea"><div id="stick"></div></div>
 </div>
 
-<p id="message">点击“开始游戏”，用方向键控制小蛇。</p>
-<p class="small">每吃一颗苹果加 1 分。游戏过程中可以随时暂停。</p>
+<p id="message">点击开始，用方向键控制小蛇。</p>
+<p class="small">每吃一颗苹果加 1 分。暂停期间小蛇不会移动。</p>
 
 <script>
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
-const CELL=24;
-const CELLS=20;
-const SPEED=350;
-
+const CELL=24,CELLS=20,SPEED=350;
 const $=id=>document.getElementById(id);
-
 let snake=[],food;
-let direction={x:1,y:0};
-let nextDirection={x:1,y:0};
-let score=0,lives=3;
-let started=false,running=false,paused=false;
-let gameTimer=null,countdownTimer=null;
-let deadline=0,mode="buttons",stickPointer=null;
+let direction={x:1,y:0},nextDirection={x:1,y:0};
+let score=0,lives=3,started=false,running=false,paused=false;
+let gameTimer=null,countdownTimer=null,deadline=0;
+let mode="buttons",stickPointer=null;
 
 function updateInfo(){
   $("score").textContent=score;
   $("lives").textContent=lives;
 }
-
 function randomFood(){
   let p;
   do{
-    p={
-      x:Math.floor(Math.random()*CELLS),
-      y:Math.floor(Math.random()*CELLS)
-    };
+    p={x:Math.floor(Math.random()*CELLS),y:Math.floor(Math.random()*CELLS)};
   }while(snake.some(s=>s.x===p.x&&s.y===p.y));
   return p;
 }
-
 function resetSnake(){
-  snake=[
-    {x:9,y:10},
-    {x:8,y:10},
-    {x:7,y:10},
-    {x:6,y:10}
-  ];
-  direction={x:1,y:0};
-  nextDirection={x:1,y:0};
-  food=randomFood();
-  draw();
+  snake=[{x:9,y:10},{x:8,y:10},{x:7,y:10},{x:6,y:10}];
+  direction={x:1,y:0};nextDirection={x:1,y:0};
+  food=randomFood();draw();
 }
-
 function startGame(){
-  clearInterval(gameTimer);
-  clearInterval(countdownTimer);
-
-  score=0;
-  lives=3;
-  started=true;
-  running=true;
-  paused=false;
-
+  clearInterval(gameTimer);clearInterval(countdownTimer);
+  score=0;lives=3;started=true;running=true;paused=false;
   $("overlay").style.display="none";
   $("startBtn").textContent="▶ 游戏中";
-  $("pauseBtn").disabled=false;
-  $("pauseBtn").textContent="⏸ 暂停";
+  $("pauseBtn").disabled=false;$("pauseBtn").textContent="⏸ 暂停";
   $("message").textContent="吃苹果得分，小心不要撞到墙或自己！";
-
-  resetSnake();
-  updateInfo();
+  resetSnake();updateInfo();
   gameTimer=setInterval(tick,SPEED);
 }
 
 function drawBackground(){
-  const bg=ctx.createLinearGradient(0,0,480,480);
-  bg.addColorStop(0,"#f8ffef");
-  bg.addColorStop(1,"#e6f3d9");
-  ctx.fillStyle=bg;
-  ctx.fillRect(0,0,480,480);
-
-  for(let y=0;y<CELLS;y++){
-    for(let x=0;x<CELLS;x++){
-      if((x+y)%2===0){
-        ctx.fillStyle="#ffffff35";
-        ctx.fillRect(x*CELL,y*CELL,CELL,CELL);
-      }
-    }
+  const g=ctx.createLinearGradient(0,0,480,480);
+  g.addColorStop(0,"#fcfdff");g.addColorStop(1,"#eaf2fa");
+  ctx.fillStyle=g;ctx.fillRect(0,0,480,480);
+  for(let y=0;y<CELLS;y++)for(let x=0;x<CELLS;x++){
+    if((x+y)%2===0){ctx.fillStyle="#ffffff70";ctx.fillRect(x*CELL,y*CELL,CELL,CELL);}
   }
 }
-
 function drawApple(){
-  const fx=food.x*CELL+CELL/2;
-  const fy=food.y*CELL+CELL/2;
-
-  ctx.save();
-  ctx.shadowColor="#c52c2c55";
-  ctx.shadowBlur=8;
-
-  const appleGradient=ctx.createRadialGradient(
-    fx-3,fy-4,1,fx,fy,11
-  );
-  appleGradient.addColorStop(0,"#ff8880");
-  appleGradient.addColorStop(1,"#d92735");
-
-  ctx.fillStyle=appleGradient;
-  ctx.beginPath();
-  ctx.arc(fx,fy+1,9,0,Math.PI*2);
-  ctx.fill();
-  ctx.restore();
-
-  ctx.strokeStyle="#79502d";
-  ctx.lineWidth=2;
-  ctx.beginPath();
-  ctx.moveTo(fx,fy-7);
-  ctx.lineTo(fx+1,fy-13);
-  ctx.stroke();
-
-  ctx.fillStyle="#42a85b";
-  ctx.beginPath();
-  ctx.ellipse(fx+5,fy-10,5,2.8,-0.6,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.fillStyle="#ffffff90";
-  ctx.beginPath();
-  ctx.arc(fx-3,fy-2,2,0,Math.PI*2);
-  ctx.fill();
+  const x=food.x*CELL+12,y=food.y*CELL+12;
+  ctx.save();ctx.shadowColor="#cb737355";ctx.shadowBlur=8;
+  const g=ctx.createRadialGradient(x-3,y-4,1,x,y,11);
+  g.addColorStop(0,"#ffb2b0");g.addColorStop(1,"#d66f78");
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y+1,9,0,Math.PI*2);ctx.fill();ctx.restore();
+  ctx.strokeStyle="#a17b64";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-7);ctx.lineTo(x+1,y-13);ctx.stroke();
+  ctx.fillStyle="#91b9a0";ctx.beginPath();ctx.ellipse(x+5,y-10,5,2.8,-.6,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#ffffffa0";ctx.beginPath();ctx.arc(x-3,y-2,2,0,Math.PI*2);ctx.fill();
 }
 
 function drawSnakeBody(){
   if(snake.length<2)return;
+  const pts=snake.map(s=>({x:s.x*CELL+12,y:s.y*CELL+12}));
+  ctx.save();ctx.lineCap="round";ctx.lineJoin="round";
 
-  const pts=snake.map(s=>({
-    x:s.x*CELL+CELL/2,
-    y:s.y*CELL+CELL/2
-  }));
+  // 柔和的投影
+  ctx.beginPath();ctx.moveTo(pts[0].x+2,pts[0].y+3);
+  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x+2,pts[i].y+3);
+  ctx.strokeStyle="#607b9825";ctx.lineWidth=21;ctx.stroke();
 
-  // 身体投影
-  ctx.save();
-  ctx.lineCap="round";
-  ctx.lineJoin="round";
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x+2,pts[0].y+4);
+  // 珍珠白到浅蓝灰的身体
+  const g=ctx.createLinearGradient(0,0,480,480);
+  g.addColorStop(0,"#fffdfb");g.addColorStop(.35,"#dce9f5");
+  g.addColorStop(.7,"#b7cce2");g.addColorStop(1,"#91abc9");
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
   for(let i=1;i<pts.length;i++){
-    ctx.lineTo(pts[i].x+2,pts[i].y+4);
+    const a=pts[i-1],b=pts[i];
+    ctx.quadraticCurveTo(a.x,a.y,(a.x+b.x)/2,(a.y+b.y)/2);
   }
-  ctx.strokeStyle="#164d3028";
-  ctx.lineWidth=21;
-  ctx.stroke();
+  ctx.lineTo(pts[pts.length-1].x,pts[pts.length-1].y);
+  ctx.strokeStyle=g;ctx.lineWidth=19;ctx.stroke();
 
-  // 身体主体
-  const bodyGradient=ctx.createLinearGradient(0,0,480,480);
-  bodyGradient.addColorStop(0,"#91e76b");
-  bodyGradient.addColorStop(0.45,"#4bc85b");
-  bodyGradient.addColorStop(1,"#187a40");
+  // 柔和的背部高光
+  ctx.beginPath();ctx.moveTo(pts[0].x-2,pts[0].y-4);
+  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x-2,pts[i].y-4);
+  ctx.strokeStyle="#ffffffb0";ctx.lineWidth=4;ctx.stroke();
 
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x,pts[0].y);
-
-  // 用平滑曲线连接身体各段
-  for(let i=1;i<pts.length;i++){
-    const prev=pts[i-1];
-    const cur=pts[i];
-    const midX=(prev.x+cur.x)/2;
-    const midY=(prev.y+cur.y)/2;
-    ctx.quadraticCurveTo(prev.x,prev.y,midX,midY);
-  }
-
-  const last=pts[pts.length-1];
-  ctx.lineTo(last.x,last.y);
-  ctx.strokeStyle=bodyGradient;
-  ctx.lineWidth=19;
-  ctx.stroke();
-
-  // 背部高光
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x-2,pts[0].y-4);
-  for(let i=1;i<pts.length;i++){
-    ctx.lineTo(pts[i].x-2,pts[i].y-4);
-  }
-  ctx.strokeStyle="#e2ffd18a";
-  ctx.lineWidth=3;
-  ctx.stroke();
-
-  // 细小鳞片纹理
+  // 很淡的珍珠鳞片
   for(let i=1;i<pts.length;i++){
     const p=pts[i];
-    ctx.fillStyle="#d8ffc070";
-    ctx.beginPath();
-    ctx.ellipse(p.x-3,p.y-3,4,2,-0.4,0,Math.PI*2);
-    ctx.fill();
+    ctx.fillStyle="#ffffff70";ctx.beginPath();
+    ctx.ellipse(p.x-3,p.y-3,3.5,1.7,-.4,0,Math.PI*2);ctx.fill();
   }
-
   ctx.restore();
 }
-
 function drawSnakeHead(){
-  const h=snake[0];
-  const hx=h.x*CELL+CELL/2;
-  const hy=h.y*CELL+CELL/2;
-  const angle=Math.atan2(direction.y,direction.x);
+  const h=snake[0],x=h.x*CELL+12,y=h.y*CELL+12;
+  ctx.save();ctx.translate(x,y);ctx.rotate(Math.atan2(direction.y,direction.x));
+  ctx.fillStyle="#7c98b330";ctx.beginPath();ctx.ellipse(1,3,13,11,0,0,Math.PI*2);ctx.fill();
 
-  ctx.save();
-  ctx.translate(hx,hy);
-  ctx.rotate(angle);
+  const g=ctx.createLinearGradient(-9,-10,10,10);
+  g.addColorStop(0,"#ffffff");g.addColorStop(.5,"#e4edf7");g.addColorStop(1,"#a8c0d9");
+  ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,0,13,10.5,0,0,Math.PI*2);ctx.fill();
 
-  // 头部阴影
-  ctx.fillStyle="#164d3030";
-  ctx.beginPath();
-  ctx.ellipse(1,3,13,11,0,0,Math.PI*2);
-  ctx.fill();
-
-  // 头部渐变
-  const headGradient=ctx.createLinearGradient(-9,-10,10,10);
-  headGradient.addColorStop(0,"#b0f080");
-  headGradient.addColorStop(0.5,"#60d45d");
-  headGradient.addColorStop(1,"#258443");
-
-  ctx.fillStyle=headGradient;
-  ctx.beginPath();
-  ctx.ellipse(0,0,13,10.5,0,0,Math.PI*2);
-  ctx.fill();
-
-  // 鼻吻
-  ctx.fillStyle="#74d65e";
-  ctx.beginPath();
-  ctx.ellipse(8,0,5,6,0,0,Math.PI*2);
-  ctx.fill();
-
-  // 眼睛、瞳孔和眼睛高光
+  ctx.fillStyle="#dce8f4";ctx.beginPath();ctx.ellipse(8,0,5,6,0,0,Math.PI*2);ctx.fill();
   for(const side of [-1,1]){
-    ctx.fillStyle="#fffdeb";
-    ctx.beginPath();
-    ctx.ellipse(2,side*6,4.1,4.4,0,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.fillStyle="#172e1e";
-    ctx.beginPath();
-    ctx.arc(3.5,side*6,2.1,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.fillStyle="white";
-    ctx.beginPath();
-    ctx.arc(4,side*6-0.8,0.8,0,Math.PI*2);
-    ctx.fill();
+    ctx.fillStyle="#ffffff";ctx.beginPath();ctx.ellipse(2,side*6,4.1,4.4,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#45586d";ctx.beginPath();ctx.arc(3.5,side*6,2.1,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#ffffff";ctx.beginPath();ctx.arc(4,side*6-.8,.8,0,Math.PI*2);ctx.fill();
   }
-
-  // 鼻孔
-  ctx.fillStyle="#26773c";
-  ctx.beginPath();
-  ctx.arc(11,-2,0.8,0,Math.PI*2);
-  ctx.arc(11,2,0.8,0,Math.PI*2);
-  ctx.fill();
-
+  ctx.fillStyle="#829bb5";ctx.beginPath();ctx.arc(11,-2,.8,0,Math.PI*2);ctx.arc(11,2,.8,0,Math.PI*2);ctx.fill();
   ctx.restore();
 }
-
 function draw(){
   ctx.clearRect(0,0,480,480);
-  drawBackground();
-  drawApple();
-  drawSnakeBody();
-  drawSnakeHead();
+  drawBackground();drawApple();drawSnakeBody();drawSnakeHead();
 }
 
 function tick(){
   if(!running||paused)return;
-
   direction={x:nextDirection.x,y:nextDirection.y};
-
-  const head={
-    x:snake[0].x+direction.x,
-    y:snake[0].y+direction.y
-  };
-
-  const hitWall=
-    head.x<0||head.x>=CELLS||
-    head.y<0||head.y>=CELLS;
-
+  const head={x:snake[0].x+direction.x,y:snake[0].y+direction.y};
+  const wall=head.x<0||head.x>=CELLS||head.y<0||head.y>=CELLS;
   const eating=head.x===food.x&&head.y===food.y;
-
-  // 如果没有吃苹果，尾巴本步会移走，因此不把尾格算作碰撞
-  const bodyToCheck=eating?snake:snake.slice(0,-1);
-  const hitBody=bodyToCheck.some(
-    s=>s.x===head.x&&s.y===head.y
-  );
-
-  if(hitWall||hitBody){
-    handleDeath();
-    return;
-  }
-
+  const body=eating?snake:snake.slice(0,-1);
+  const collision=body.some(s=>s.x===head.x&&s.y===head.y);
+  if(wall||collision){handleDeath();return;}
   snake.unshift(head);
+  if(eating){score++;food=randomFood();updateInfo();}
+  else snake.pop();
+  draw();
+}
 
-  if(eating){
-    score++;
-    food=randomFood();
-    updateInfo();
-  }else{
-    snake.pop();
+// 随机生成一条保留原长度、没有自相交的蛇
+function randomSnakeOfLength(length){
+  const dirs=[{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+  for(let attempt=0;attempt<300;attempt++){
+    const path=[{x:Math.floor(Math.random()*CELLS),y:Math.floor(Math.random()*CELLS)}];
+    while(path.length<length){
+      const last=path[path.length-1];
+      const options=dirs
+        .map(d=>({x:last.x+d.x,y:last.y+d.y}))
+        .filter(p=>p.x>=0&&p.x<CELLS&&p.y>=0&&p.y<CELLS)
+        .filter(p=>!path.some(s=>s.x===p.x&&s.y===p.y));
+      if(!options.length)break;
+      path.push(options[Math.floor(Math.random()*options.length)]);
+    }
+    if(path.length===length)return path;
   }
+  // 极长蛇的备用方案：尽量生成一条不重叠的连续路径
+  const path=[];
+  for(let y=0;y<CELLS;y++){
+    const row=y%2===0
+      ?Array.from({length:CELLS},(_,x)=>({x,y}))
+      :Array.from({length:CELLS-1},(_,i)=>({x:CELLS-1-i,y}));
+    path.push(...row);
+  }
+  return path.slice(0,Math.min(length,path.length));
+}
 
+function randomRespawn(){
+  // 保存原有长度，随机选择安全位置，不重置分数
+  const oldLength=snake.length;
+  snake=randomSnakeOfLength(oldLength);
+  direction={x:1,y:0};
+  const a=snake[0],b=snake[1];
+  direction={x:Math.sign(a.x-b.x),y:Math.sign(a.y-b.y)};
+  if(direction.x===0&&direction.y===0)direction={x:1,y:0};
+  nextDirection={x:direction.x,y:direction.y};
+
+  // 苹果不能生成在蛇身上
+  food=randomFood();
   draw();
 }
 
 function handleDeath(){
-  running=false;
-  paused=false;
-  clearInterval(gameTimer);
-  clearInterval(countdownTimer);
-
+  running=false;paused=false;clearInterval(gameTimer);clearInterval(countdownTimer);
   $("pauseBtn").disabled=true;
   $("overlay").style.display="block";
-  $("reviveActions").style.display="none";
-  $("endActions").style.display="none";
+  $("reviveActions").style.display="none";$("endActions").style.display="none";
 
   if(lives>0){
-    $("overlayTitle").textContent="💥 撞到了！";
-    $("overlayText").textContent=
-      "你还可以复活，或者直接退出游戏。";
+    $("overlayTitle").textContent="💫 小蛇撞到了！";
+    $("overlayText").textContent="复活后保留原来的长度和分数，并随机出现在棋盘上。";
     $("reviveActions").style.display="block";
-    $("reviveBtn").disabled=false;
-
-    deadline=Date.now()+15000;
-    updateCountdown();
+    deadline=Date.now()+15000;updateCountdown();
     countdownTimer=setInterval(updateCountdown,200);
-  }else{
-    showGameOver("免费复活次数已经用完！");
-  }
+  }else showGameOver("免费复活次数已经用完！");
 }
-
 function updateCountdown(){
-  const left=Math.max(
-    0,Math.ceil((deadline-Date.now())/1000)
-  );
-
+  const left=Math.max(0,Math.ceil((deadline-Date.now())/1000));
   $("countdown").textContent="复活倒计时："+left+" 秒";
-
   if(left<=0){
     clearInterval(countdownTimer);
     $("reviveActions").style.display="none";
     showGameOver("15 秒复活时间已结束！");
   }
 }
-
 function revive(){
   if(Date.now()>=deadline||lives<=0)return;
-
   clearInterval(countdownTimer);
   lives--;
-
-  // 复活后蛇回到起点，保留当前得分
-  resetSnake();
+  randomRespawn();
   updateInfo();
-
   $("overlay").style.display="none";
-  $("message").textContent="💚 复活成功！继续挑战！";
-  running=true;
-  paused=false;
-
-  $("pauseBtn").disabled=false;
-  $("pauseBtn").textContent="⏸ 暂停";
-
-  clearInterval(gameTimer);
-  gameTimer=setInterval(tick,SPEED);
+  $("message").textContent="💫 随机位置复活成功！长度和分数均已保留。";
+  running=true;paused=false;
+  $("pauseBtn").disabled=false;$("pauseBtn").textContent="⏸ 暂停";
+  clearInterval(gameTimer);gameTimer=setInterval(tick,SPEED);
 }
-
 function showGameOver(message){
-  running=false;
-  paused=false;
-  clearInterval(gameTimer);
-  clearInterval(countdownTimer);
-
+  running=false;paused=false;clearInterval(gameTimer);clearInterval(countdownTimer);
   $("overlay").style.display="block";
   $("overlayTitle").textContent="游戏结束";
-  $("overlayText").textContent=
-    message+" 最终得分："+score+" 分。";
+  $("overlayText").textContent=message+" 最终得分："+score+" 分。";
   $("countdown").textContent="";
-  $("reviveActions").style.display="none";
-  $("endActions").style.display="block";
-
-  $("pauseBtn").disabled=true;
-  $("message").textContent="可以重新开始，再挑战一次！";
+  $("reviveActions").style.display="none";$("endActions").style.display="block";
+  $("pauseBtn").disabled=true;$("message").textContent="可以重新开始，再挑战一次！";
 }
-
 function exitGame(){
-  clearInterval(gameTimer);
-  clearInterval(countdownTimer);
-
-  running=false;
-  paused=false;
-  started=false;
-
-  $("overlay").style.display="none";
-  $("pauseBtn").disabled=true;
+  clearInterval(gameTimer);clearInterval(countdownTimer);
+  running=false;paused=false;started=false;
+  $("overlay").style.display="none";$("pauseBtn").disabled=true;
   $("startBtn").textContent="▶ 开始游戏";
-  $("message").textContent=
-    "游戏已退出。点击“开始游戏”可以再玩。";
+  $("message").textContent="游戏已退出。点击开始游戏可以再玩。";
   draw();
 }
-
 function togglePause(){
-  if(!started||!running&& !paused)return;
-  if($("overlay").style.display==="block")return;
-
+  if(!started||(!running&&!paused)||$("overlay").style.display==="block")return;
   paused=!paused;
-
-  if(paused){
-    $("pauseBtn").textContent="▶ 继续";
-    $("message").textContent=
-      "游戏已暂停。准备好后点击“继续”。";
-  }else{
-    $("pauseBtn").textContent="⏸ 暂停";
-    $("message").textContent="继续游戏！";
-  }
+  $("pauseBtn").textContent=paused?"▶ 继续":"⏸ 暂停";
+  $("message").textContent=paused?"游戏已暂停。准备好后点击继续。":"继续游戏！";
 }
-
 function setDirection(x,y){
-  if(!started){
-    startGame();
-  }
-
-  if(!running||paused||
-     $("overlay").style.display==="block")return;
-
-  // 禁止直接反向，避免蛇立即撞到自己
+  if(!started)startGame();
+  if(!running||paused||$("overlay").style.display==="block")return;
   if(x===-direction.x&&y===-direction.y)return;
-
   nextDirection={x,y};
 }
 
-$("startBtn").addEventListener("click",()=>{
-  if(!started)startGame();
-});
-
+$("startBtn").addEventListener("click",()=>{if(!started)startGame();});
 $("pauseBtn").addEventListener("click",togglePause);
 $("restartTopBtn").addEventListener("click",startGame);
 $("reviveBtn").addEventListener("click",revive);
@@ -555,7 +315,6 @@ $("down").addEventListener("pointerdown",()=>setDirection(0,1));
 $("left").addEventListener("pointerdown",()=>setDirection(-1,0));
 $("right").addEventListener("pointerdown",()=>setDirection(1,0));
 
-// 键盘控制：方向键或 WASD；空格键暂停
 document.addEventListener("keydown",e=>{
   const keys={
     ArrowUp:[0,-1],w:[0,-1],W:[0,-1],
@@ -563,86 +322,36 @@ document.addEventListener("keydown",e=>{
     ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],
     ArrowRight:[1,0],d:[1,0],D:[1,0]
   };
-
-  if(keys[e.key]){
-    e.preventDefault();
-    setDirection(...keys[e.key]);
-  }
-
-  if(e.key===" "){
-    e.preventDefault();
-    togglePause();
-  }
+  if(keys[e.key]){e.preventDefault();setDirection(...keys[e.key]);}
+  if(e.key===" "){e.preventDefault();togglePause();}
 });
 
-// 切换方向按钮和虚拟摇杆
 $("modeBtn").addEventListener("click",()=>{
   mode=mode==="buttons"?"stick":"buttons";
-
-  $("dpad").style.display=
-    mode==="buttons"?"grid":"none";
-
-  $("stickArea").style.display=
-    mode==="stick"?"block":"none";
-
-  $("modeBtn").textContent=
-    mode==="buttons"?
-    "切换为虚拟摇杆":"切换为方向按钮";
+  $("dpad").style.display=mode==="buttons"?"grid":"none";
+  $("stickArea").style.display=mode==="stick"?"block":"none";
+  $("modeBtn").textContent=mode==="buttons"?"切换为虚拟摇杆":"切换为方向按钮";
 });
 
-const area=$("stickArea");
-const stick=$("stick");
-
+const area=$("stickArea"),stick=$("stick");
 function moveStick(e){
-  const r=area.getBoundingClientRect();
-  const cx=r.left+r.width/2;
-  const cy=r.top+r.height/2;
-
-  const dx=e.clientX-cx;
-  const dy=e.clientY-cy;
-  const dist=Math.hypot(dx,dy);
-  const max=48;
-  const scale=dist>max?max/dist:1;
-  const sx=dx*scale;
-  const sy=dy*scale;
-
+  const r=area.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  const dx=e.clientX-cx,dy=e.clientY-cy,dist=Math.hypot(dx,dy),max=48;
+  const scale=dist>max?max/dist:1,sx=dx*scale,sy=dy*scale;
   stick.style.left=(r.width/2-34+sx)+"px";
   stick.style.top=(r.height/2-34+sy)+"px";
-
   if(dist>18){
-    if(Math.abs(dx)>Math.abs(dy)){
-      setDirection(dx>0?1:-1,0);
-    }else{
-      setDirection(0,dy>0?1:-1);
-    }
+    if(Math.abs(dx)>Math.abs(dy))setDirection(dx>0?1:-1,0);
+    else setDirection(0,dy>0?1:-1);
   }
 }
-
-area.addEventListener("pointerdown",e=>{
-  stickPointer=e.pointerId;
-  area.setPointerCapture(e.pointerId);
-  moveStick(e);
-});
-
-area.addEventListener("pointermove",e=>{
-  if(e.pointerId===stickPointer)moveStick(e);
-});
-
-function releaseStick(){
-  stickPointer=null;
-  stick.style.left="58px";
-  stick.style.top="58px";
-}
-
+area.addEventListener("pointerdown",e=>{stickPointer=e.pointerId;area.setPointerCapture(e.pointerId);moveStick(e);});
+area.addEventListener("pointermove",e=>{if(e.pointerId===stickPointer)moveStick(e);});
+function releaseStick(){stickPointer=null;stick.style.left="58px";stick.style.top="58px";}
 area.addEventListener("pointerup",releaseStick);
 area.addEventListener("pointercancel",releaseStick);
 
-// 初始化
-score=0;
-lives=3;
-resetSnake();
-updateInfo();
+score=0;lives=3;resetSnake();updateInfo();
 </script>
-
 </body>
 </html>
