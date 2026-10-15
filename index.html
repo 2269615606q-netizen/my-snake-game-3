@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的贪吃蛇游戏</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 20px 12px;
+  background: #101820;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+h1 { color: #70e000; margin: 8px 0; }
+#info { margin: 12px; font-size: 18px; }
+canvas {
+  display: block;
+  width: min(92vw, 400px);
+  height: auto;
+  margin: 12px auto;
+  background: #17252a;
+  border: 3px solid #70e000;
+  border-radius: 8px;
+}
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin: 5px;
+  background: #70e000;
+  color: #102000;
+  font-size: 17px;
+  font-weight: bold;
+}
+.controls {
+  display: grid;
+  grid-template-columns: 62px 62px 62px;
+  justify-content: center;
+  gap: 7px;
+  margin: 15px auto;
+}
+.controls button { padding: 12px 0; margin: 0; }
+#message { min-height: 24px; color: #ffd166; }
+</style>
+</head>
+<body>
+<h1>🐍 贪吃蛇</h1>
+<div id="info">分数：<span id="score">0</span></div>
+<canvas id="game" width="400" height="400"></canvas>
+<div id="message">点击开始游戏！</div>
+<button id="start">开始 / 重新开始</button>
+
+<div class="controls">
+  <span></span>
+  <button data-dir="up">⬆️</button>
+  <span></span>
+  <button data-dir="left">⬅️</button>
+  <button data-dir="down">⬇️</button>
+  <button data-dir="right">➡️</button>
+</div>
+<p>电脑可用方向键；手机可点击方向按钮。</p>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const scoreEl = document.getElementById("score");
+const message = document.getElementById("message");
+const size = 20;
+const cells = 20;
+
+let snake, food, dx, dy, score, timer, running, ended;
+
+function randomFood() {
+  let p;
+  do {
+    p = {
+      x: Math.floor(Math.random() * cells),
+      y: Math.floor(Math.random() * cells)
+    };
+  } while (snake.some(s => s.x === p.x && s.y === p.y));
+  return p;
+}
+
+function draw() {
+  ctx.fillStyle = "#17252a";
+  ctx.fillRect(0, 0, 400, 400);
+
+  ctx.fillStyle = "#ff595e";
+  ctx.beginPath();
+  ctx.arc(food.x * size + 10, food.y * size + 10, 8, 0, Math.PI * 2);
+  ctx.fill();
+
+  snake.forEach((part, i) => {
+    ctx.fillStyle = i === 0 ? "#b7ef4a" : "#70e000";
+    ctx.fillRect(part.x * size + 1, part.y * size + 1, 18, 18);
+  });
+}
+
+function startGame() {
+  clearInterval(timer);
+  snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
+  dx = 1;
+  dy = 0;
+  score = 0;
+  running = true;
+  ended = false;
+  scoreEl.textContent = score;
+  message.textContent = "游戏开始！吃红色食物吧。";
+  food = randomFood();
+  draw();
+  timer = setInterval(tick, 140);
+}
+
+function tick() {
+  if (!running) return;
+  const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+  const eating = head.x === food.x && head.y === food.y;
+
+  if (
+    head.x < 0 || head.x >= cells ||
+    head.y < 0 || head.y >= cells ||
+    snake.slice(0, eating ? undefined : -1).some(
+      p => p.x === head.x && p.y === head.y
+    )
+  ) {
+    running = false;
+    ended = true;
+    clearInterval(timer);
+    message.textContent = "游戏结束！你的分数是 " + score;
+    return;
+  }
+
+  snake.unshift(head);
+  if (eating) {
+    score += 10;
+    scoreEl.textContent = score;
+    if (snake.length === cells * cells) {
+      running = false;
+      clearInterval(timer);
+      message.textContent = "恭喜！你赢了！";
+      return;
+    }
+    food = randomFood();
+  } else {
+    snake.pop();
+  }
+  draw();
+}
+
+function changeDirection(dir) {
+  const dirs = {
+    up: [0, -1], down: [0, 1],
+    left: [-1, 0], right: [1, 0]
+  };
+  const [nx, ny] = dirs[dir];
+  if (nx === -dx && ny === -dy) return;
+  dx = nx;
+  dy = ny;
+}
+
+document.querySelectorAll("[data-dir]").forEach(btn => {
+  btn.addEventListener("click", () => changeDirection(btn.dataset.dir));
+});
+
+document.addEventListener("keydown", e => {
+  const keys = {
+    ArrowUp: "up", ArrowDown: "down",
+    ArrowLeft: "left", ArrowRight: "right"
+  };
+  if (keys[e.key]) {
+    e.preventDefault();
+    changeDirection(keys[e.key]);
+  }
+});
+
+document.getElementById("start").addEventListener("click", startGame);
+
+snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
+food = {x: 15, y: 10};
+dx = 1;
+dy = 0;
+score = 0;
+draw();
+</script>
+</body>
+</html>
