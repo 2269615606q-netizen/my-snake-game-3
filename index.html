@@ -3,188 +3,276 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我的贪吃蛇游戏</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>快乐贪吃蛇</title>
 <style>
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  padding: 20px 12px;
-  background: #101820;
-  color: white;
-  font-family: Arial, sans-serif;
-  text-align: center;
+:root{--green:#70e000;--dark:#102019;--panel:#19352b}
+*{box-sizing:border-box}
+body{
+ margin:0;padding:12px 10px 28px;background:linear-gradient(160deg,#102019,#203d30);
+ color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;
+ touch-action:pan-y
 }
-h1 { color: #70e000; margin: 8px 0; }
-#info { margin: 12px; font-size: 18px; }
-canvas {
-  display: block;
-  width: min(92vw, 400px);
-  height: auto;
-  margin: 12px auto;
-  background: #17252a;
-  border: 3px solid #70e000;
-  border-radius: 8px;
-}
-button {
-  border: 0;
-  border-radius: 10px;
-  padding: 12px 18px;
-  margin: 5px;
-  background: #70e000;
-  color: #102000;
-  font-size: 17px;
-  font-weight: bold;
-}
-.controls {
-  display: grid;
-  grid-template-columns: 62px 62px 62px;
-  justify-content: center;
-  gap: 7px;
-  margin: 15px auto;
-}
-.controls button { padding: 12px 0; margin: 0; }
-#message { min-height: 24px; color: #ffd166; }
+h1{font-size:clamp(27px,7vw,38px);margin:5px 0;color:#b9ff66;text-shadow:0 3px 14px #70e00055}
+.subtitle{color:#c5ddce;font-size:14px;margin-bottom:12px}
+.stats{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:12px auto;max-width:600px}
+.stat{background:#244638;border:1px solid #47785c;border-radius:14px;padding:9px 14px;min-width:90px}
+.stat small{display:block;color:#c8e5d0;font-size:12px}
+.stat strong{font-size:22px;color:#d8ff9b}
+#board{position:relative;width:min(96vw,600px);margin:0 auto}
+canvas{display:block;width:100%;height:auto;aspect-ratio:1;background:#12271f;border:3px solid #8ee65b;border-radius:16px;box-shadow:0 8px 26px #0005;touch-action:none}
+#message{min-height:32px;margin:10px auto 4px;color:#ffe69b;font-weight:600}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+.mainbtn{border:0;border-radius:13px;background:linear-gradient(#b6ff68,#70e000);color:#17300a;font-weight:800;font-size:17px;padding:12px 23px;box-shadow:0 4px 0 #428b00;margin:5px}
+.modebar{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px auto}
+.mode{padding:10px 15px;border:1px solid #679878;border-radius:12px;color:#e8ffed;background:#244638}
+.mode.active{background:#b6ff68;color:#17300a;border-color:#b6ff68;font-weight:800}
+#controls{max-width:430px;margin:10px auto 0}
+.dpad{display:grid;grid-template-columns:repeat(3,min(22vw,82px));grid-template-rows:repeat(2,min(18vw,66px));gap:8px;justify-content:center}
+.dir{border:1px solid #9bd978;border-radius:17px;background:linear-gradient(#39634a,#244633);color:white;font-size:29px;box-shadow:0 4px 0 #122b1b;user-select:none;-webkit-user-select:none}
+.dir:active{transform:translateY(2px);background:#5e944b}
+.dpad .up{grid-column:2;grid-row:1}
+.dpad .left{grid-column:1;grid-row:2}
+.dpad .down{grid-column:2;grid-row:2}
+.dpad .right{grid-column:3;grid-row:2}
+#joystickArea{display:none;justify-content:center;padding:8px 0 12px}
+#joyBase{width:min(48vw,190px);height:min(48vw,190px);border-radius:50%;border:3px solid #8cbd88;background:radial-gradient(circle,#315b43,#1b3b2c);position:relative;touch-action:none;box-shadow:inset 0 0 20px #07170d}
+#joyKnob{width:39%;height:39%;position:absolute;left:30.5%;top:30.5%;border-radius:50%;background:linear-gradient(145deg,#d9ffad,#70e000);border:3px solid #efffdd;box-shadow:0 4px 12px #0007;pointer-events:none}
+.hint{font-size:13px;color:#c5ddce;line-height:1.7;max-width:560px;margin:14px auto}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
-<h1>🐍 贪吃蛇</h1>
-<div id="info">分数：<span id="score">0</span></div>
-<canvas id="game" width="400" height="400"></canvas>
-<div id="message">点击开始游戏！</div>
-<button id="start">开始 / 重新开始</button>
+<h1>🐍 快乐贪吃蛇</h1>
+<div class="subtitle">慢慢玩，不着急！吃豆豆，拿高分 🌟</div>
 
-<div class="controls">
-  <span></span>
-  <button data-dir="up">⬆️</button>
-  <span></span>
-  <button data-dir="left">⬅️</button>
-  <button data-dir="down">⬇️</button>
-  <button data-dir="right">➡️</button>
+<div class="stats">
+ <div class="stat"><small>🏆 当前分数</small><strong id="score">0</strong></div>
+ <div class="stat"><small>❤️ 免费复活</small><strong id="lives">3</strong></div>
+ <div class="stat"><small>🍎 吃掉豆豆</small><strong id="eaten">0</strong></div>
 </div>
-<p>电脑可用方向键；手机可点击方向按钮。</p>
+
+<div id="board"><canvas id="game" width="480" height="480"></canvas></div>
+<div id="message">点击「开始游戏」，准备出发！</div>
+<button class="mainbtn" id="start">▶ 开始游戏 / 重新开始</button>
+
+<div class="modebar">
+ <button class="mode active" id="btnMode">⬆️⬇️ 方向按钮</button>
+ <button class="mode" id="joyMode">🕹️ 虚拟摇杆</button>
+</div>
+
+<div id="controls">
+ <div class="dpad" id="dpad">
+  <button class="dir up" data-dir="up" aria-label="向上">▲</button>
+  <button class="dir left" data-dir="left" aria-label="向左">◀</button>
+  <button class="dir down" data-dir="down" aria-label="向下">▼</button>
+  <button class="dir right" data-dir="right" aria-label="向右">▶</button>
+ </div>
+ <div id="joystickArea">
+  <div id="joyBase" aria-label="虚拟摇杆"><div id="joyKnob"></div></div>
+ </div>
+</div>
+
+<div class="hint">
+ 🐌 慢速模式：蛇每隔约 0.22 秒移动一次。<br>
+ 🕹️ 可随时切换方向按钮或摇杆。<br>
+ ❤️ 撞墙或撞到自己会消耗 1 次免费复活；每局有 3 次。<br>
+ 🍏 每吃一颗豆豆加 1 分。电脑也可以使用键盘方向键。
+</div>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-const scoreEl = document.getElementById("score");
-const message = document.getElementById("message");
-const size = 20;
-const cells = 20;
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+const N=20,CELL=24;
+const scoreEl=document.getElementById("score");
+const livesEl=document.getElementById("lives");
+const eatenEl=document.getElementById("eaten");
+const message=document.getElementById("message");
+const dpad=document.getElementById("dpad");
+const joystickArea=document.getElementById("joystickArea");
+const joyBase=document.getElementById("joyBase");
+const joyKnob=document.getElementById("joyKnob");
+let snake=[],food={x:14,y:10},dx=1,dy=0;
+let score=0,lives=3,eaten=0,timer=null,running=false,started=false;
+let mode="buttons",lastTurn=0,flash=0;
 
-let snake, food, dx, dy, score, timer, running, ended;
-
-function randomFood() {
-  let p;
-  do {
-    p = {
-      x: Math.floor(Math.random() * cells),
-      y: Math.floor(Math.random() * cells)
-    };
-  } while (snake.some(s => s.x === p.x && s.y === p.y));
-  return p;
+function makeSnake(){
+ snake=[{x:8,y:10},{x:7,y:10},{x:6,y:10},{x:5,y:10}];
+ dx=1;dy=0;
 }
+function newFood(){
+ let options=[];
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++)
+  if(!snake.some(p=>p.x===x&&p.y===y))options.push({x,y});
+ food=options[Math.floor(Math.random()*options.length)]||{x:15,y:15};
+}
+function updateStats(){
+ scoreEl.textContent=score;
+ livesEl.textContent=lives;
+ eatenEl.textContent=eaten;
+}
+function startGame(){
+ clearInterval(timer);
+ score=0;lives=3;eaten=0;running=true;started=true;
+ makeSnake();newFood();updateStats();
+ message.textContent="出发！慢慢控制小蛇吃豆豆 🍏";
+ draw();
+ timer=setInterval(tick,220);
+}
+function setDirection(nx,ny){
+ if(!started){startGame();return;}
+ if(!running)return;
+ if(nx===-dx&&ny===-dy)return;
+ dx=nx;dy=ny;
+}
+function direction(name){
+ const map={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
+ const v=map[name];if(v)setDirection(v[0],v[1]);
+}
+document.querySelectorAll("[data-dir]").forEach(b=>{
+ b.addEventListener("pointerdown",e=>{
+  e.preventDefault();direction(b.dataset.dir);
+ });
+});
+document.addEventListener("keydown",e=>{
+ const map={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",
+ w:"up",s:"down",a:"left",d:"right"};
+ if(map[e.key]){
+  e.preventDefault();direction(map[e.key]);
+ }
+});
+document.getElementById("start").addEventListener("click",startGame);
 
-function draw() {
-  ctx.fillStyle = "#17252a";
-  ctx.fillRect(0, 0, 400, 400);
+function setMode(m){
+ mode=m;
+ dpad.style.display=m==="buttons"?"grid":"none";
+ joystickArea.style.display=m==="joystick"?"flex":"none";
+ document.getElementById("btnMode").classList.toggle("active",m==="buttons");
+ document.getElementById("joyMode").classList.toggle("active",m==="joystick");
+}
+document.getElementById("btnMode").addEventListener("click",()=>setMode("buttons"));
+document.getElementById("joyMode").addEventListener("click",()=>setMode("joystick"));
 
-  ctx.fillStyle = "#ff595e";
-  ctx.beginPath();
-  ctx.arc(food.x * size + 10, food.y * size + 10, 8, 0, Math.PI * 2);
+let joyPointer=null;
+function moveKnob(e){
+ const r=joyBase.getBoundingClientRect();
+ const cx=r.left+r.width/2,cy=r.top+r.height/2;
+ let x=e.clientX-cx,y=e.clientY-cy;
+ const max=r.width*0.29,dist=Math.hypot(x,y)||1;
+ const k=Math.min(1,max/dist);
+ x*=k;y*=k;
+ joyKnob.style.transform=`translate(${x}px,${y}px)`;
+ if(Math.hypot(e.clientX-cx,e.clientY-cy)>12){
+  if(Math.abs(x)>Math.abs(y))direction(x>0?"right":"left");
+  else direction(y>0?"down":"up");
+ }
+}
+joyBase.addEventListener("pointerdown",e=>{
+ e.preventDefault();joyPointer=e.pointerId;
+ joyBase.setPointerCapture(e.pointerId);moveKnob(e);
+});
+joyBase.addEventListener("pointermove",e=>{
+ if(e.pointerId===joyPointer)moveKnob(e);
+});
+function releaseJoy(){
+ joyPointer=null;joyKnob.style.transform="translate(0,0)";
+}
+joyBase.addEventListener("pointerup",releaseJoy);
+joyBase.addEventListener("pointercancel",releaseJoy);
+joyBase.addEventListener("lostpointercapture",releaseJoy);
+
+function collision(p){
+ return p.x<0||p.x>=N||p.y<0||p.y>=N||
+  snake.some((s,i)=>i<snake.length-1&&s.x===p.x&&s.y===p.y);
+}
+function tick(){
+ if(!running)return;
+ const head={x:snake[0].x+dx,y:snake[0].y+dy};
+ const eating=head.x===food.x&&head.y===food.y;
+ const body=eating?snake:snake.slice(0,-1);
+ const hit=head.x<0||head.x>=N||head.y<0||head.y>=N||
+  body.some(p=>p.x===head.x&&p.y===head.y);
+ if(hit){
+  if(lives>0){
+   lives--;
+   makeSnake();
+   updateStats();
+   message.textContent="哎呀，碰到了！免费复活一次 ❤️ 还剩 "+lives+" 次";
+   flash=8;draw();
+   if(lives===0){
+    message.textContent="最后一次复活机会已用完！点击重新开始再玩一局。";
+    running=false;clearInterval(timer);return;
+   }
+   return;
+  }
+  running=false;clearInterval(timer);
+  message.textContent="游戏结束！最终得分："+score+"。点击重新开始。";
+  return;
+ }
+ snake.unshift(head);
+ if(eating){
+  score+=1;eaten++;newFood();updateStats();
+  message.textContent="真棒！+1 分 🍏 继续加油！";
+ }else snake.pop();
+ draw();
+}
+function roundedRect(x,y,w,h,r){
+ ctx.beginPath();ctx.roundRect(x,y,w,h,r);
+}
+function draw(){
+ ctx.clearRect(0,0,480,480);
+ ctx.fillStyle="#142b21";ctx.fillRect(0,0,480,480);
+ ctx.strokeStyle="#ffffff08";ctx.lineWidth=1;
+ for(let i=0;i<=N;i++){
+  ctx.beginPath();ctx.moveTo(i*CELL,0);ctx.lineTo(i*CELL,480);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,i*CELL);ctx.lineTo(480,i*CELL);ctx.stroke();
+ }
+ // 食物：亮绿豆豆与高光
+ const fx=food.x*CELL+12,fy=food.y*CELL+12;
+ ctx.save();ctx.shadowColor="#b8ff52";ctx.shadowBlur=15;
+ const grad=ctx.createRadialGradient(fx-4,fy-4,1,fx,fy,10);
+ grad.addColorStop(0,"#f3ffb0");grad.addColorStop(.35,"#b8ff52");grad.addColorStop(1,"#49a900");
+ ctx.fillStyle=grad;ctx.beginPath();ctx.arc(fx,fy,9,0,Math.PI*2);ctx.fill();
+ ctx.restore();
+ ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(fx-3,fy-4,2,0,Math.PI*2);ctx.fill();
+ // 蛇身体渐变与鳞片
+ for(let i=snake.length-1;i>=0;i--){
+  const p=snake[i],x=p.x*CELL,y=p.y*CELL;
+  const inset=i===0?1.5:2.2;
+  const g=ctx.createLinearGradient(x,y,x+CELL,y+CELL);
+  if(i===0){g.addColorStop(0,"#e1ff9d");g.addColorStop(1,"#7edb28");}
+  else{g.addColorStop(0,`hsl(${105-i*1.2},72%,${54-Math.min(i,18)*.65}%)`);g.addColorStop(1,"#258447");}
+  ctx.fillStyle=g;
+  roundedRect(x+inset,y+inset,CELL-inset*2,CELL-inset*2,7);
   ctx.fill();
-
-  snake.forEach((part, i) => {
-    ctx.fillStyle = i === 0 ? "#b7ef4a" : "#70e000";
-    ctx.fillRect(part.x * size + 1, part.y * size + 1, 18, 18);
-  });
-}
-
-function startGame() {
-  clearInterval(timer);
-  snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
-  dx = 1;
-  dy = 0;
-  score = 0;
-  running = true;
-  ended = false;
-  scoreEl.textContent = score;
-  message.textContent = "游戏开始！吃红色食物吧。";
-  food = randomFood();
-  draw();
-  timer = setInterval(tick, 140);
-}
-
-function tick() {
-  if (!running) return;
-  const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-  const eating = head.x === food.x && head.y === food.y;
-
-  if (
-    head.x < 0 || head.x >= cells ||
-    head.y < 0 || head.y >= cells ||
-    snake.slice(0, eating ? undefined : -1).some(
-      p => p.x === head.x && p.y === head.y
-    )
-  ) {
-    running = false;
-    ended = true;
-    clearInterval(timer);
-    message.textContent = "游戏结束！你的分数是 " + score;
-    return;
+  if(i>0){
+   ctx.fillStyle="#d4ffad55";
+   ctx.beginPath();ctx.arc(x+8,y+8,1.5,0,Math.PI*2);ctx.fill();
   }
-
-  snake.unshift(head);
-  if (eating) {
-    score += 10;
-    scoreEl.textContent = score;
-    if (snake.length === cells * cells) {
-      running = false;
-      clearInterval(timer);
-      message.textContent = "恭喜！你赢了！";
-      return;
-    }
-    food = randomFood();
-  } else {
-    snake.pop();
+ }
+ // 蛇头眼睛，按行进方向调整
+ if(snake.length){
+  const h=snake[0],cx=h.x*CELL+12,cy=h.y*CELL+12;
+  let ex=-4,ey=-4,ex2=4,ey2=-4;
+  if(dx===1){ex=4;ey=-4;ex2=4;ey2=4}
+  if(dx===-1){ex=-4;ey=-4;ex2=-4;ey2=4}
+  if(dy===1){ex=-4;ey=4;ex2=4;ey2=4}
+  if(dy===-1){ex=-4;ey=-4;ex2=4;ey2=-4}
+  ctx.fillStyle="#fff";
+  for(const [ox,oy] of [[ex,ey],[ex2,ey2]]){
+   ctx.beginPath();ctx.arc(cx+ox,cy+oy,3.2,0,Math.PI*2);ctx.fill();
+   ctx.fillStyle="#153020";ctx.beginPath();ctx.arc(cx+ox+dx,cy+oy+dy,1.5,0,Math.PI*2);ctx.fill();
+   ctx.fillStyle="#fff";
   }
-  draw();
+ }
+ if(!running&&!started){
+  ctx.fillStyle="#06150dc9";ctx.fillRect(0,0,480,480);
+  ctx.fillStyle="#e0ffbd";ctx.textAlign="center";ctx.font="bold 27px system-ui";
+  ctx.fillText("准备好了吗？",240,222);
+  ctx.font="18px system-ui";ctx.fillText("点击下方按钮开始",240,258);
+ }
 }
-
-function changeDirection(dir) {
-  const dirs = {
-    up: [0, -1], down: [0, 1],
-    left: [-1, 0], right: [1, 0]
-  };
-  const [nx, ny] = dirs[dir];
-  if (nx === -dx && ny === -dy) return;
-  dx = nx;
-  dy = ny;
-}
-
-document.querySelectorAll("[data-dir]").forEach(btn => {
-  btn.addEventListener("click", () => changeDirection(btn.dataset.dir));
-});
-
-document.addEventListener("keydown", e => {
-  const keys = {
-    ArrowUp: "up", ArrowDown: "down",
-    ArrowLeft: "left", ArrowRight: "right"
-  };
-  if (keys[e.key]) {
-    e.preventDefault();
-    changeDirection(keys[e.key]);
-  }
-});
-
-document.getElementById("start").addEventListener("click", startGame);
-
-snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
-food = {x: 15, y: 10};
-dx = 1;
-dy = 0;
-score = 0;
-draw();
+makeSnake();newFood();draw();
 </script>
 </body>
 </html>
