@@ -6,72 +6,25 @@
 <title>天蓝色小蛇</title>
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;padding:14px 10px 24px;
-  background:#f0f7ff;color:#28445f;
-  font-family:Arial,"Microsoft YaHei",sans-serif;
-  text-align:center;user-select:none;
-}
+body{margin:0;padding:14px 10px 24px;background:#f0f7ff;color:#28445f;font-family:Arial,"Microsoft YaHei",sans-serif;text-align:center;user-select:none}
 h1{font-size:25px;margin:5px 0 12px;color:#318fcb}
-.stats{
-  display:flex;justify-content:center;gap:22px;
-  font-size:16px;margin:8px 0 12px;
-}
+.stats{display:flex;justify-content:center;gap:22px;font-size:16px;margin:8px 0 12px}
 .stats b{color:#168bd0}
-#gameWrap{
-  position:relative;width:min(94vw,480px);
-  margin:0 auto;
-}
-canvas{
-  display:block;width:100%;height:auto;
-  background:#fff;border:3px solid #c9e7fa;
-  border-radius:15px;box-shadow:0 5px 18px #8bbbd533;
-  touch-action:none;
-}
-#message{
-  min-height:26px;margin:10px 0;
-  color:#3987b9;font-size:14px;
-}
-.buttons{
-  display:flex;justify-content:center;gap:9px;
-  flex-wrap:wrap;margin:10px auto;max-width:480px;
-}
-button{
-  border:0;border-radius:12px;padding:11px 17px;
-  background:#d9efff;color:#226c9f;
-  font-size:15px;font-weight:bold;cursor:pointer;
-}
+#gameWrap{position:relative;width:min(94vw,480px);margin:0 auto}
+canvas{display:block;width:100%;height:auto;background:#fff;border:3px solid #c9e7fa;border-radius:15px;box-shadow:0 5px 18px #8bbbd533;touch-action:none}
+#message{min-height:26px;margin:10px 0;color:#3987b9;font-size:14px}
+.buttons{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:10px auto;max-width:480px}
+button{border:0;border-radius:12px;padding:11px 17px;background:#d9efff;color:#226c9f;font-size:15px;font-weight:bold;cursor:pointer}
 button:active{transform:scale(.96)}
 button.primary{background:#43a9e8;color:white}
 button.danger{background:#ffe4e4;color:#b64c4c}
 #controls{margin:12px auto;max-width:330px}
-#arrows{
-  display:grid;grid-template-columns:repeat(3,66px);
-  grid-template-rows:repeat(2,55px);
-  gap:6px;justify-content:center;
-}
+#arrows{display:grid;grid-template-columns:repeat(3,66px);grid-template-rows:repeat(2,55px);gap:6px;justify-content:center}
 #arrows button{padding:4px;font-size:24px}
 #arrows .empty{visibility:hidden}
-#joystick{
-  width:180px;height:180px;margin:12px auto;
-  position:relative;border-radius:50%;
-  background:#dcefff;border:3px solid #b8def8;
-  touch-action:none;
-}
-#stick{
-  position:absolute;left:50%;top:50%;
-  width:64px;height:64px;border-radius:50%;
-  background:#58b7ee;border:4px solid #fff;
-  box-shadow:0 3px 9px #6daacb77;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
-}
-#overlay{
-  display:none;position:absolute;inset:0;
-  border-radius:13px;background:#173d5dcc;
-  align-items:center;justify-content:center;
-  flex-direction:column;padding:18px;color:white;
-}
+#joystick{width:180px;height:180px;margin:12px auto;position:relative;border-radius:50%;background:#dcefff;border:3px solid #b8def8;touch-action:none}
+#stick{position:absolute;left:50%;top:50%;width:64px;height:64px;border-radius:50%;background:#58b7ee;border:4px solid #fff;box-shadow:0 3px 9px #6daacb77;transform:translate(-50%,-50%);pointer-events:none}
+#overlay{display:none;position:absolute;inset:0;border-radius:13px;background:#173d5dcc;align-items:center;justify-content:center;flex-direction:column;padding:18px;color:white}
 #overlay h2{margin:0 0 10px;font-size:26px}
 #overlay p{line-height:1.7}
 #overlay button{margin:5px}
@@ -80,534 +33,396 @@ button.danger{background:#ffe4e4;color:#b64c4c}
 </head>
 <body>
 <h1>🐍 天蓝色小蛇</h1>
-
 <div class="stats">
-  <div>得分：<b id="score">0</b></div>
-  <div>长度：<b id="length">5</b></div>
-  <div>复活：<b id="lives">3</b></div>
+<div>得分：<b id="score">0</b></div>
+<div>长度：<b id="length">5</b></div>
+<div>复活：<b id="lives">3</b></div>
 </div>
 
 <div id="gameWrap">
-  <canvas id="game" width="480" height="480"></canvas>
-  <div id="overlay">
-    <h2 id="overlayTitle">游戏结束</h2>
-    <p id="overlayText"></p>
-    <div id="overlayButtons"></div>
-  </div>
+<canvas id="game" width="480" height="480"></canvas>
+<div id="overlay">
+<h2 id="overlayTitle">准备开始</h2>
+<p id="overlayText"></p>
+<div id="overlayButtons"></div>
+</div>
 </div>
 
-<div id="message">使用方向按钮或键盘控制小蛇。</div>
+<div id="message">点击“开始游戏”，小蛇才会开始移动。</div>
 
 <div class="buttons">
-  <button class="primary" id="pauseBtn">暂停</button>
-  <button id="controlBtn">切换虚拟摇杆</button>
-  <button class="danger" id="restartBtn">重新开始</button>
+<button class="primary" id="startBtn">开始游戏</button>
+<button id="pauseBtn">暂停</button>
+<button id="controlBtn">切换虚拟摇杆</button>
+<button class="danger" id="restartBtn">重新开始</button>
 </div>
 
 <div id="controls">
-  <div id="arrows">
-    <button class="empty">　</button>
-    <button data-dir="up">▲</button>
-    <button class="empty">　</button>
-    <button data-dir="left">◀</button>
-    <button data-dir="down">▼</button>
-    <button data-dir="right">▶</button>
-  </div>
-  <div id="joystick" style="display:none">
-    <div id="stick"></div>
-  </div>
+<div id="arrows">
+<button class="empty">　</button>
+<button data-dir="up">▲</button>
+<button class="empty">　</button>
+<button data-dir="left">◀</button>
+<button data-dir="down">▼</button>
+<button data-dir="right">▶</button>
 </div>
-
+<div id="joystick" style="display:none"><div id="stick"></div></div>
+</div>
 <div class="small">吃苹果得分。撞到自己或墙壁会触发复活选项。</div>
 
 <script>
 (function(){
 "use strict";
-
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 const SIZE=20,CELL=24;
 const $=id=>document.getElementById(id);
 
 let snake,dir,nextDir,food,score,lives;
-let running=false,paused=false,dead=false;
-let invincibleUntil=0,gameTimer=null,deathTimer=null;
-let deathDeadline=0,deathCountdown=null;
-let controlMode="arrows";
-let lastTick=0;
+let running=false,started=false,paused=false,dead=false;
+let invincibleUntil=0,gameTimer=null,deathCountdown=null;
+let deathDeadline=0,controlMode="arrows";
+let animationFrame=null;
 
 const vectors={
-  up:{x:0,y:-1},
-  down:{x:0,y:1},
-  left:{x:-1,y:0},
-  right:{x:1,y:0}
+up:{x:0,y:-1},down:{x:0,y:1},
+left:{x:-1,y:0},right:{x:1,y:0}
 };
-
 function same(a,b){return a.x===b.x&&a.y===b.y}
 function opposite(a,b){return a.x===-b.x&&a.y===-b.y}
-
 function setMessage(t){$("message").textContent=t}
 
 function updateStats(){
-  $("score").textContent=score;
-  $("length").textContent=snake.length;
-  $("lives").textContent=lives;
+$("score").textContent=score;
+$("length").textContent=snake.length;
+$("lives").textContent=lives;
 }
-
 function randomInt(n){return Math.floor(Math.random()*n)}
-
 function randomFood(){
-  let p,tries=0;
-  do{
-    p={x:randomInt(SIZE),y:randomInt(SIZE)};
-    tries++;
-    if(tries>2000)return {x:0,y:0};
-  }while(snake.some(s=>same(s,p)));
-  return p;
+let p,tries=0;
+do{
+p={x:randomInt(SIZE),y:randomInt(SIZE)};
+if(++tries>2000)return {x:0,y:0};
+}while(snake.some(s=>same(s,p)));
+return p;
 }
 
 function newGame(){
-  clearInterval(gameTimer);
-  clearTimeout(deathTimer);
-  clearInterval(deathCountdown);
-  $("overlay").style.display="none";
-
-  snake=[
-    {x:10,y:10},{x:9,y:10},{x:8,y:10},
-    {x:7,y:10},{x:6,y:10}
-  ];
-  dir={x:1,y:0};nextDir={x:1,y:0};
-  score=0;lives=3;paused=false;dead=false;
-  running=true;invincibleUntil=0;
-  $("pauseBtn").textContent="暂停";
-  food=randomFood();
-  updateStats();
-  setMessage("小蛇准备好了，去吃苹果吧！");
-  draw();
-  startLoop();
+clearInterval(gameTimer);
+clearInterval(deathCountdown);
+started=false;running=false;paused=false;dead=false;
+invincibleUntil=0;
+snake=[
+{x:10,y:10},{x:9,y:10},{x:8,y:10},
+{x:7,y:10},{x:6,y:10}
+];
+dir={x:1,y:0};nextDir={x:1,y:0};
+score=0;lives=3;
+food=randomFood();
+$("overlay").style.display="none";
+$("startBtn").style.display="inline-block";
+$("startBtn").textContent="开始游戏";
+$("pauseBtn").textContent="暂停";
+updateStats();
+setMessage("点击“开始游戏”，小蛇才会开始移动。");
+draw();
 }
 
-function startLoop(){
-  clearInterval(gameTimer);
-  gameTimer=setInterval(tick,350);
+function beginGame(){
+if(started||dead)return;
+started=true;running=true;paused=false;
+$("startBtn").style.display="none";
+setMessage("游戏开始！吃苹果得分。");
+gameTimer=setInterval(tick,350);
+draw();
 }
 
 function setDirection(name){
-  if(!running||paused||dead)return;
-  const v=vectors[name];
-  if(!v)return;
-  if(snake.length>1&&opposite(v,dir))return;
-  nextDir={x:v.x,y:v.y};
+if(!running||!started||paused||dead)return;
+const v=vectors[name];
+if(!v)return;
+if(snake.length>1&&opposite(v,dir))return;
+nextDir={x:v.x,y:v.y};
 }
-
 document.querySelectorAll("[data-dir]").forEach(btn=>{
-  btn.addEventListener("click",()=>setDirection(btn.dataset.dir));
+btn.addEventListener("click",()=>setDirection(btn.dataset.dir));
 });
-
 document.addEventListener("keydown",e=>{
-  const keys={
-    ArrowUp:"up",w:"up",W:"up",
-    ArrowDown:"down",s:"down",S:"down",
-    ArrowLeft:"left",a:"left",A:"left",
-    ArrowRight:"right",d:"right",D:"right"
-  };
-  if(keys[e.key]){
-    e.preventDefault();
-    setDirection(keys[e.key]);
-  }
-  if(e.key===" "){
-    e.preventDefault();
-    togglePause();
-  }
+const keys={
+ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down",
+ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right"
+};
+if(keys[e.key]){
+e.preventDefault();
+setDirection(keys[e.key]);
+}
+if(e.key===" "){e.preventDefault();togglePause()}
 });
 
+$("startBtn").addEventListener("click",beginGame);
 $("pauseBtn").addEventListener("click",togglePause);
 $("restartBtn").addEventListener("click",newGame);
 
 $("controlBtn").addEventListener("click",()=>{
-  controlMode=controlMode==="arrows"?"joystick":"arrows";
-  $("arrows").style.display=controlMode==="arrows"?"grid":"none";
-  $("joystick").style.display=controlMode==="joystick"?"block":"none";
-  $("controlBtn").textContent=
-    controlMode==="arrows"?"切换虚拟摇杆":"切换方向按钮";
+controlMode=controlMode==="arrows"?"joystick":"arrows";
+$("arrows").style.display=controlMode==="arrows"?"grid":"none";
+$("joystick").style.display=controlMode==="joystick"?"block":"none";
+$("controlBtn").textContent=controlMode==="arrows"?"切换虚拟摇杆":"切换方向按钮";
 });
 
 function togglePause(){
-  if(!running||dead)return;
-  paused=!paused;
-  $("pauseBtn").textContent=paused?"继续":"暂停";
-  setMessage(paused?"游戏已暂停。":"游戏继续！");
-  draw();
+if(!started||!running||dead)return;
+paused=!paused;
+$("pauseBtn").textContent=paused?"继续":"暂停";
+setMessage(paused?"游戏已暂停。":"游戏继续！");
+draw();
 }
 
 const joystick=$("joystick"),stick=$("stick");
 let joyActive=false;
-
 function joystickMove(e){
-  if(!joyActive)return;
-  const r=joystick.getBoundingClientRect();
-  const cx=r.left+r.width/2,cy=r.top+r.height/2;
-  const dx=e.clientX-cx,dy=e.clientY-cy;
-  const dist=Math.sqrt(dx*dx+dy*dy)||1;
-  const limit=48,scale=Math.min(1,limit/dist);
-  stick.style.left=`calc(50% + ${dx*scale}px)`;
-  stick.style.top=`calc(50% + ${dy*scale}px)`;
-  if(dist>12){
-    if(Math.abs(dx)>Math.abs(dy))setDirection(dx>0?"right":"left");
-    else setDirection(dy>0?"down":"up");
-  }
+if(!joyActive)return;
+const r=joystick.getBoundingClientRect();
+const dx=e.clientX-(r.left+r.width/2);
+const dy=e.clientY-(r.top+r.height/2);
+const dist=Math.sqrt(dx*dx+dy*dy)||1;
+const scale=Math.min(1,48/dist);
+stick.style.left=`calc(50% + ${dx*scale}px)`;
+stick.style.top=`calc(50% + ${dy*scale}px)`;
+if(dist>12){
+if(Math.abs(dx)>Math.abs(dy))setDirection(dx>0?"right":"left");
+else setDirection(dy>0?"down":"up");
+}
 }
 joystick.addEventListener("pointerdown",e=>{
-  joyActive=true;
-  joystick.setPointerCapture(e.pointerId);
-  joystickMove(e);
+joyActive=true;joystick.setPointerCapture(e.pointerId);joystickMove(e);
 });
 joystick.addEventListener("pointermove",joystickMove);
-function endJoystick(){
-  joyActive=false;stick.style.left="50%";stick.style.top="50%";
-}
+function endJoystick(){joyActive=false;stick.style.left="50%";stick.style.top="50%"}
 joystick.addEventListener("pointerup",endJoystick);
 joystick.addEventListener("pointercancel",endJoystick);
 
 function tick(){
-  if(!running||paused||dead)return;
-  dir=nextDir;
-  const protectedNow=Date.now()<invincibleUntil;
-  const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+if(!running||!started||paused||dead)return;
+dir=nextDir;
+const protectedNow=Date.now()<invincibleUntil;
+const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
 
-  if(protectedNow){
-    head.x=(head.x+SIZE)%SIZE;
-    head.y=(head.y+SIZE)%SIZE;
-  }else{
-    if(head.x<0||head.x>=SIZE||head.y<0||head.y>=SIZE){
-      die("撞到墙壁了！");
-      return;
-    }
-  }
+if(protectedNow){
+head.x=(head.x+SIZE)%SIZE;
+head.y=(head.y+SIZE)%SIZE;
+}else if(head.x<0||head.x>=SIZE||head.y<0||head.y>=SIZE){
+die("撞到墙壁了！");return;
+}
+const eating=same(head,food);
+const bodyToCheck=eating?snake:snake.slice(0,-1);
+const hitSelf=bodyToCheck.some(s=>same(s,head));
+if(hitSelf&&!protectedNow){die("撞到自己的身体了！");return}
 
-  const eating=same(head,food);
-  const bodyToCheck=eating?snake:snake.slice(0,-1);
-  const hitSelf=bodyToCheck.some(s=>same(s,head));
+snake.unshift(head);
+if(eating){score++;food=randomFood();setMessage("太棒了！吃到苹果，得分 +1。")}
+else snake.pop();
 
-  if(hitSelf&&!protectedNow){
-    die("撞到自己的身体了！");
-    return;
-  }
-
-  snake.unshift(head);
-  if(eating){
-    score++;
-    food=randomFood();
-    setMessage("太棒了！吃到苹果，得分 +1。");
-  }else{
-    snake.pop();
-  }
-
-  if(Date.now()<invincibleUntil){
-    const remaining=Math.max(0,(invincibleUntil-Date.now())/1000);
-    setMessage("无敌保护中："+remaining.toFixed(1)+" 秒");
-  }
-
-  updateStats();
-  draw();
+updateStats();
+draw();
 }
 
 function randomSnakeOfLength(len){
-  // 随机寻找一条不重叠的连续蛇身
-  for(let attempt=0;attempt<500;attempt++){
-    const x=randomInt(SIZE),y=randomInt(SIZE);
-    const dirs=[
-      {x:1,y:0},{x:-1,y:0},
-      {x:0,y:1},{x:0,y:-1}
-    ];
-    const first=dirs[randomInt(dirs.length)];
-    const candidate=[{x,y}];
-    let cur={x,y};
-    for(let i=1;i<len;i++){
-      let choices=dirs.filter(v=>{
-        const p={x:cur.x+v.x,y:cur.y+v.y};
-        return p.x>=0&&p.x<SIZE&&p.y>=0&&p.y<SIZE&&
-          !candidate.some(s=>same(s,p));
-      });
-      if(!choices.length)break;
-      const v=choices[randomInt(choices.length)];
-      cur={x:cur.x+v.x,y:cur.y+v.y};
-      candidate.push(cur);
-    }
-    if(candidate.length===len)return candidate;
-  }
-
-  const path=[];
-  for(let y=0;y<SIZE;y++){
-    if(y%2===0){
-      for(let x=0;x<SIZE;x++)path.push({x,y});
-    }else{
-      for(let x=SIZE-1;x>=0;x--)path.push({x,y});
-    }
-  }
-  return path.slice(0,Math.min(len,path.length));
+for(let attempt=0;attempt<500;attempt++){
+const cur0={x:randomInt(SIZE),y:randomInt(SIZE)};
+const candidate=[cur0];let cur=cur0;
+for(let i=1;i<len;i++){
+const dirs=[{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+const choices=dirs.filter(v=>{
+const p={x:cur.x+v.x,y:cur.y+v.y};
+return p.x>=0&&p.x<SIZE&&p.y>=0&&p.y<SIZE&&!candidate.some(s=>same(s,p));
+});
+if(!choices.length)break;
+const v=choices[randomInt(choices.length)];
+cur={x:cur.x+v.x,y:cur.y+v.y};candidate.push(cur);
+}
+if(candidate.length===len)return candidate;
+}
+const path=[];
+for(let y=0;y<SIZE;y++){
+if(y%2===0){for(let x=0;x<SIZE;x++)path.push({x,y})}
+else{for(let x=SIZE-1;x>=0;x--)path.push({x,y})}
+}
+return path.slice(0,Math.min(len,path.length));
 }
 
 function die(reason){
-  dead=true;invincibleUntil=0;
-  setMessage(reason);
-  if(lives>0){
-    showReviveChoice(reason);
-  }else{
-    showGameOver();
-  }
+dead=true;running=false;invincibleUntil=0;
+clearInterval(gameTimer);
+setMessage(reason);
+if(lives>0)showReviveChoice(reason);
+else showGameOver();
 }
 
 function showOverlay(title,html,buttons){
-  $("overlayTitle").textContent=title;
-  $("overlayText").innerHTML=html;
-  const area=$("overlayButtons");
-  area.innerHTML="";
-  buttons.forEach(item=>{
-    const b=document.createElement("button");
-    b.textContent=item.text;
-    if(item.primary)b.className="primary";
-    if(item.danger)b.className="danger";
-    b.addEventListener("click",item.action);
-    area.appendChild(b);
-  });
-  $("overlay").style.display="flex";
+$("overlayTitle").textContent=title;
+$("overlayText").innerHTML=html;
+const area=$("overlayButtons");area.innerHTML="";
+buttons.forEach(item=>{
+const b=document.createElement("button");
+b.textContent=item.text;
+if(item.primary)b.className="primary";
+if(item.danger)b.className="danger";
+b.addEventListener("click",item.action);
+area.appendChild(b);
+});
+$("overlay").style.display="flex";
 }
 
 function showReviveChoice(reason){
-  deathDeadline=Date.now()+15000;
-  function updateCountdown(){
-    const left=Math.max(0,Math.ceil((deathDeadline-Date.now())/1000));
-    $("overlayText").innerHTML=
-      reason+"<br>是否免费复活？<br>剩余时间：<b>"+left+"</b> 秒";
-    if(left<=0){
-      clearInterval(deathCountdown);
-      showGameOver();
-    }
-  }
-  showOverlay("小蛇倒下了",reason,[
-    {text:"免费复活",primary:true,action:revive},
-    {text:"退出游戏",danger:true,action:showGameOver}
-  ]);
-  clearInterval(deathCountdown);
-  updateCountdown();
-  deathCountdown=setInterval(updateCountdown,250);
+deathDeadline=Date.now()+15000;
+function updateCountdown(){
+const left=Math.max(0,Math.ceil((deathDeadline-Date.now())/1000));
+$("overlayText").innerHTML=reason+"<br>是否免费复活？<br>剩余时间：<b>"+left+"</b> 秒";
+if(left<=0){clearInterval(deathCountdown);showGameOver()}
+}
+showOverlay("小蛇倒下了",reason,[
+{text:"免费复活",primary:true,action:revive},
+{text:"退出游戏",danger:true,action:showGameOver}
+]);
+clearInterval(deathCountdown);
+updateCountdown();
+deathCountdown=setInterval(updateCountdown,250);
 }
 
 function revive(){
-  if(lives<=0)return;
-  clearInterval(deathCountdown);
-  clearTimeout(deathTimer);
-  lives--;
-  const oldLength=snake.length;
-  snake=randomSnakeOfLength(oldLength);
-  const h=snake[0],second=snake[1]||{x:h.x-1,y:h.y};
-  dir={x:Math.sign(h.x-second.x),y:Math.sign(h.y-second.y)};
-  if(dir.x===0&&dir.y===0)dir={x:1,y:0};
-  nextDir={...dir};
-  food=randomFood();
-  dead=false;paused=false;running=true;
-  invincibleUntil=Date.now()+2000;
-  $("overlay").style.display="none";
-  $("pauseBtn").textContent="暂停";
-  updateStats();
-  setMessage("复活成功！两秒无敌保护！");
-  draw();
+if(lives<=0)return;
+clearInterval(deathCountdown);
+lives--;
+snake=randomSnakeOfLength(snake.length);
+const h=snake[0],s=snake[1]||{x:h.x-1,y:h.y};
+dir={x:Math.sign(h.x-s.x),y:Math.sign(h.y-s.y)};
+if(dir.x===0&&dir.y===0)dir={x:1,y:0};
+nextDir={...dir};
+food=randomFood();
+dead=false;started=true;running=true;paused=false;
+invincibleUntil=Date.now()+2000;
+$("overlay").style.display="none";
+$("startBtn").style.display="none";
+$("pauseBtn").textContent="暂停";
+updateStats();
+setMessage("复活成功！黄色保护光膜正在逐渐消退。");
+gameTimer=setInterval(tick,350);
+draw();
 }
 
 function showGameOver(){
-  clearInterval(deathCountdown);
-  clearTimeout(deathTimer);
-  dead=true;running=false;
-  $("overlay").style.display="flex";
-  showOverlay("游戏结束","最终得分："+score+" 分",[
-    {text:"再玩一次",primary:true,action:newGame}
-  ]);
-  setMessage("游戏结束，点击再玩一次重新开始。");
+clearInterval(deathCountdown);
+clearInterval(gameTimer);
+dead=true;running=false;
+showOverlay("游戏结束","最终得分："+score+" 分",[
+{text:"再玩一次",primary:true,action:newGame}
+]);
+setMessage("游戏结束，点击再玩一次重新开始。");
 }
 
 function roundedRect(x,y,w,h,r){
-  ctx.beginPath();
-  ctx.roundRect(x,y,w,h,r);
+ctx.beginPath();ctx.roundRect(x,y,w,h,r);
 }
-
 function drawBackground(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="#fbfdff";
-  ctx.fillRect(0,0,480,480);
-
-  ctx.strokeStyle="#edf5fb";
-  ctx.lineWidth=1;
-  for(let i=0;i<=SIZE;i++){
-    ctx.beginPath();
-    ctx.moveTo(i*CELL,0);ctx.lineTo(i*CELL,480);ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(0,i*CELL);ctx.lineTo(480,i*CELL);ctx.stroke();
-  }
+ctx.clearRect(0,0,480,480);
+ctx.fillStyle="#fbfdff";ctx.fillRect(0,0,480,480);
+ctx.strokeStyle="#edf5fb";ctx.lineWidth=1;
+for(let i=0;i<=SIZE;i++){
+ctx.beginPath();ctx.moveTo(i*CELL,0);ctx.lineTo(i*CELL,480);ctx.stroke();
+ctx.beginPath();ctx.moveTo(0,i*CELL);ctx.lineTo(480,i*CELL);ctx.stroke();
 }
-
+}
 function drawApple(){
-  const cx=food.x*CELL+CELL/2;
-  const cy=food.y*CELL+CELL/2+1;
-  ctx.save();
-  ctx.shadowColor="#ff9b9b";
-  ctx.shadowBlur=7;
-  ctx.fillStyle="#ff686d";
-  ctx.beginPath();
-  ctx.arc(cx,cy,8.5,0,Math.PI*2);
-  ctx.fill();
-  ctx.shadowBlur=0;
-  ctx.fillStyle="#ffb1b2";
-  ctx.beginPath();
-  ctx.arc(cx-2.5,cy-3,2.3,0,Math.PI*2);
-  ctx.fill();
-  ctx.strokeStyle="#5bbd78";
-  ctx.lineWidth=2.5;
-  ctx.beginPath();
-  ctx.moveTo(cx+1,cy-7);ctx.quadraticCurveTo(cx+3,cy-13,cx+8,cy-10);
-  ctx.stroke();
-  ctx.restore();
+const cx=food.x*CELL+12,cy=food.y*CELL+13;
+ctx.save();ctx.shadowColor="#ff9b9b";ctx.shadowBlur=7;
+ctx.fillStyle="#ff686d";ctx.beginPath();ctx.arc(cx,cy,8.5,0,Math.PI*2);ctx.fill();
+ctx.shadowBlur=0;ctx.fillStyle="#ffb1b2";
+ctx.beginPath();ctx.arc(cx-2.5,cy-3,2.3,0,Math.PI*2);ctx.fill();
+ctx.strokeStyle="#5bbd78";ctx.lineWidth=2.5;
+ctx.beginPath();ctx.moveTo(cx+1,cy-7);ctx.quadraticCurveTo(cx+3,cy-13,cx+8,cy-10);ctx.stroke();
+ctx.restore();
 }
-
 function drawBodySegment(s,i,glowAlpha){
-  const pad=i===0?2:2.8;
-  const x=s.x*CELL+pad,y=s.y*CELL+pad;
-  const w=CELL-pad*2,h=CELL-pad*2;
-
-  ctx.save();
-  if(glowAlpha>0){
-    ctx.shadowColor=`rgba(255,229,103,${glowAlpha})`;
-    ctx.shadowBlur=12*glowAlpha;
-  }
-  const grad=ctx.createLinearGradient(x,y,x+w,y+h);
-  grad.addColorStop(0,"#86d5ff");
-  grad.addColorStop(1,"#40a9e9");
-  ctx.fillStyle=grad;
-  roundedRect(x,y,w,h,i===0?7:5);
-  ctx.fill();
-  ctx.shadowBlur=0;
-
-  // 每节身体都有细腻的高光
-  ctx.fillStyle="rgba(255,255,255,0.25)";
-  roundedRect(x+3,y+2,w-6,3,2);
-  ctx.fill();
-
-  if(glowAlpha>0){
-    ctx.fillStyle=`rgba(255,235,132,${glowAlpha*0.48})`;
-    roundedRect(x,y,w,h,5);
-    ctx.fill();
-  }
-  ctx.restore();
+const pad=i===0?2:2.8,x=s.x*CELL+pad,y=s.y*CELL+pad;
+const w=CELL-pad*2,h=CELL-pad*2;
+ctx.save();
+if(glowAlpha>0){ctx.shadowColor=`rgba(255,229,103,${glowAlpha})`;ctx.shadowBlur=12*glowAlpha}
+const grad=ctx.createLinearGradient(x,y,x+w,y+h);
+grad.addColorStop(0,"#86d5ff");grad.addColorStop(1,"#40a9e9");
+ctx.fillStyle=grad;roundedRect(x,y,w,h,i===0?7:5);ctx.fill();
+ctx.shadowBlur=0;
+ctx.fillStyle="rgba(255,255,255,0.25)";
+roundedRect(x+3,y+2,w-6,3,2);ctx.fill();
+if(glowAlpha>0){
+ctx.fillStyle=`rgba(255,235,132,${glowAlpha*.48})`;
+roundedRect(x,y,w,h,5);ctx.fill();
 }
-
+ctx.restore();
+}
 function drawHead(){
-  const h=snake[0];
-  const x=h.x*CELL,y=h.y*CELL;
-  const cx=x+CELL/2,cy=y+CELL/2;
-  const dx=dir.x,dy=dir.y;
-  const px=-dy,py=dx; // 前进方向的垂直方向
+const h=snake[0],x=h.x*CELL,y=h.y*CELL;
+const cx=x+12,cy=y+12,dx=dir.x,dy=dir.y,px=-dy,py=dx;
+ctx.save();
+ctx.shadowColor="rgba(48,147,202,.25)";ctx.shadowBlur=5;ctx.shadowOffsetY=2;
+const grad=ctx.createLinearGradient(x+2,y+2,x+22,y+22);
+grad.addColorStop(0,"#a0e0ff");grad.addColorStop(1,"#38a4e8");
+ctx.fillStyle=grad;roundedRect(x+1.5,y+1.5,21,21,7);ctx.fill();
+ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+ctx.fillStyle="rgba(255,255,255,.35)";
+roundedRect(x+5,y+3,14,3,2);ctx.fill();
 
-  ctx.save();
-
-  // 头部柔和阴影
-  ctx.shadowColor="rgba(48,147,202,.25)";
-  ctx.shadowBlur=5;
-  ctx.shadowOffsetY=2;
-
-  const grad=ctx.createLinearGradient(x+2,y+2,x+CELL-2,y+CELL-2);
-  grad.addColorStop(0,"#a0e0ff");
-  grad.addColorStop(1,"#38a4e8");
-  ctx.fillStyle=grad;
-  roundedRect(x+1.5,y+1.5,CELL-3,CELL-3,7);
-  ctx.fill();
-  ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-
-  // 头顶亮斑
-  ctx.fillStyle="rgba(255,255,255,.35)";
-  roundedRect(x+5,y+3,CELL-10,3,2);
-  ctx.fill();
-
-  // 两只眼睛位于头部正前方，沿前进方向排列
-  const eyeForward=5.7;
-  const eyeSide=5.1;
-  const eyeRadius=4.0;
-
-  for(const side of [-1,1]){
-    const ex=cx+dx*eyeForward+px*eyeSide*side;
-    const ey=cy+dy*eyeForward+py*eyeSide*side;
-
-    // 白色眼球
-    ctx.fillStyle="#ffffff";
-    ctx.beginPath();
-    ctx.arc(ex,ey,eyeRadius,0,Math.PI*2);
-    ctx.fill();
-
-    // 深蓝瞳孔朝前，略微向前偏移
-    ctx.fillStyle="#174b6d";
-    ctx.beginPath();
-    ctx.arc(ex+dx*1.6,ey+dy*1.6,2.0,0,Math.PI*2);
-    ctx.fill();
-
-    // 眼睛小高光
-    ctx.fillStyle="#ffffff";
-    ctx.beginPath();
-    ctx.arc(ex+dx*1.0-0.7,ey+dy*1.0-0.7,0.7,0,Math.PI*2);
-    ctx.fill();
-  }
-
-  // 头部最前端的两个小鼻孔
-  const noseForward=10.1;
-  for(const side of [-1,1]){
-    const nx=cx+dx*noseForward+px*side*2.2;
-    const ny=cy+dy*noseForward+py*side*2.2;
-    ctx.fillStyle="#287db0";
-    ctx.beginPath();
-    ctx.arc(nx,ny,0.8,0,Math.PI*2);
-    ctx.fill();
-  }
-
-  ctx.restore();
+for(const side of [-1,1]){
+const ex=cx+dx*5.7+px*5.1*side;
+const ey=cy+dy*5.7+py*5.1*side;
+ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(ex,ey,4,0,Math.PI*2);ctx.fill();
+ctx.fillStyle="#174b6d";ctx.beginPath();ctx.arc(ex+dx*1.6,ey+dy*1.6,2,0,Math.PI*2);ctx.fill();
+ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(ex+dx-.7,ey+dy-.7,.7,0,Math.PI*2);ctx.fill();
+}
+for(const side of [-1,1]){
+const nx=cx+dx*10.1+px*side*2.2,ny=cy+dy*10.1+py*side*2.2;
+ctx.fillStyle="#287db0";ctx.beginPath();ctx.arc(nx,ny,.8,0,Math.PI*2);ctx.fill();
+}
+ctx.restore();
 }
 
 function draw(){
-  drawBackground();
-  if(!snake||!snake.length)return;
+drawBackground();
+if(!snake||!snake.length)return;
+drawApple();
 
-  drawApple();
+// 使用连续时间计算渐隐，避免依赖游戏移动的 350ms 间隔。
+// 光膜会在两秒内每一帧平滑变淡。
+const remaining=Math.max(0,invincibleUntil-Date.now());
+const glowAlpha=invincibleUntil>0?Math.min(1,remaining/2000):0;
 
-  const now=Date.now();
-  const remaining=Math.max(0,invincibleUntil-now);
-  const glowAlpha=remaining>0?Math.min(1,remaining/2):0;
+for(let i=snake.length-1;i>=1;i--)drawBodySegment(snake[i],i,glowAlpha);
+drawHead();
 
-  // 先画身体，再单独画头部，确保头部五官清晰
-  for(let i=snake.length-1;i>=1;i--){
-    drawBodySegment(snake[i],i,glowAlpha);
-  }
-  drawHead();
-
-  // 无敌期间头部也覆盖淡黄色保护膜
-  if(glowAlpha>0){
-    const h=snake[0];
-    ctx.save();
-    ctx.globalAlpha=glowAlpha*.3;
-    ctx.fillStyle="#fff09a";
-    roundedRect(h.x*CELL+2,h.y*CELL+2,CELL-4,CELL-4,7);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  if(paused&&!dead){
-    ctx.fillStyle="rgba(255,255,255,.72)";
-    ctx.fillRect(0,0,480,480);
-    ctx.fillStyle="#318fcb";
-    ctx.font="bold 30px Arial";
-    ctx.textAlign="center";
-    ctx.fillText("已暂停",240,235);
-    ctx.font="16px Arial";
-    ctx.fillText("点击“继续”恢复游戏",240,265);
-  }
+if(glowAlpha>0){
+const h=snake[0];
+ctx.save();
+ctx.globalAlpha=glowAlpha*.32;
+ctx.fillStyle="#fff09a";
+roundedRect(h.x*CELL+2,h.y*CELL+2,20,20,7);ctx.fill();
+ctx.restore();
 }
 
+// 动画刷新让光膜持续渐隐，即使小蛇尚未走到下一格也会变化。
+if(invincibleUntil>Date.now()&&!dead){
+if(animationFrame!==null)cancelAnimationFrame(animationFrame);
+animationFrame=requestAnimationFrame(draw);
+}else{
+animationFrame=null;
+}
+
+if(paused&&!dead){
+ctx.fillStyle="rgba(255,255,255,.72)";ctx.fillRect(0,0,480,480);
+ctx.fillStyle="#318fcb";ctx.font="bold 30px Arial";ctx.textAlign="center";
+ctx.fillText("已暂停",240,235);
+ctx.font="16px Arial";ctx.fillText("点击“继续”恢复游戏",240,265);
+}
+}
 newGame();
 })();
 </script>
